@@ -2,13 +2,15 @@ import argparse
 import pickle
 from collections import Counter
 from pathlib import Path
-#it was panda here
+
 import face_recognition
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw,  ImageFont
 
 DEFAULT_ENCODINGS_PATH = Path("output/encodings.pkl")
-BOUNDING_BOX_COLOR = "blue"
+BOUNDING_BOX_COLOR = "green"
 TEXT_COLOR = "white"
+FONT_PATH_1=rf"{Path.cwd()}\ARIAL.TTF"
+FONT_PATH_2=rf"{Path.cwd()}\COMiCSANS.TTF"
 
 # Create directories if they don't already exist
 Path("training").mkdir(exist_ok=True)
@@ -119,10 +121,15 @@ def _display_face(draw, bounding_box, name):
     """
     Draws bounding boxes around faces, a caption area, and text captions.
     """
+    
+    font1 = ImageFont.truetype(FONT_PATH_2, 50) 
+    
     top, right, bottom, left = bounding_box
-    draw.rectangle(((left, top), (right, bottom)), outline=BOUNDING_BOX_COLOR)
+    draw.rectangle(((left, top), (right, bottom)), outline=BOUNDING_BOX_COLOR, width= 25)
     text_left, text_top, text_right, text_bottom = draw.textbbox(
-        (left, bottom), name
+        
+        (left, bottom), name,font=ImageFont.truetype(FONT_PATH_2, 65) 
+
     )
     draw.rectangle(
         ((text_left, text_top), (text_right, text_bottom)),
@@ -133,6 +140,7 @@ def _display_face(draw, bounding_box, name):
         (text_left, text_top),
         name,
         fill=TEXT_COLOR,
+        font= font1
     )
 
 
