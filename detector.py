@@ -98,9 +98,11 @@ def recognize_faces(
         input_face_locations, input_face_encodings
     ):
         name, common , total = _recognize_face(unknown_encoding, loaded_encodings)
+        percentage=int(common/total*100)
+
         if not name:
             name = "Unknown"
-        _display_face(draw, bounding_box, f"{name} {common}/{total}",(image_width, image_height))
+        _display_face(draw, bounding_box, f"{name} {percentage}%",(image_width, image_height))
     del draw
     pillow_image.show()
 
@@ -130,7 +132,7 @@ def _display_face(draw, bounding_box, name,image_size):
     Draws bounding boxes around faces, a caption area, and text captions.
     """
     image_width,image_height=image_size
-    font_size = max(10, int(image_width * 0.035))  
+    font_size = max(10, int(image_width * 0.035)) 
     box_width = max(1, int(image_width * 0.01))
     
     font1 = ImageFont.truetype(FONT_PATH_2, font_size) 
