@@ -2,13 +2,14 @@ import argparse
 import pickle
 from collections import Counter
 from pathlib import Path
-#its me
 import face_recognition
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw,  ImageFont
 
 DEFAULT_ENCODINGS_PATH = Path("output/encodings.pkl")
-BOUNDING_BOX_COLOR = "blue"
+BOUNDING_BOX_COLOR = "green"
 TEXT_COLOR = "white"
+FONT_PATH_1=rf"{Path.cwd()}\ARIAL.TTF"
+FONT_PATH_2=rf"{Path.cwd()}\COMiCSANS.TTF"
 
 # Create directories if they don't already exist
 Path("training").mkdir(exist_ok=True)
@@ -45,19 +46,24 @@ def encode_known_faces(
     """
     names = []
     encodings = []
+    counts = {}
 
     for filepath in Path("training").glob("*/*"):
         name = filepath.parent.name
         image = face_recognition.load_image_file(filepath)
-
+        
         face_locations = face_recognition.face_locations(image, model=model)
         face_encodings = face_recognition.face_encodings(image, face_locations)
 
         for encoding in face_encodings:
             names.append(name)
             encodings.append(encoding)
+            if name in counts:
+                counts[name] += 1
+            else:
+                counts[name] = 1
 
-    name_encodings = {"names": names, "encodings": encodings}
+    name_encodings = {"names": names, "encodings": encodings,"counts":counts}
     with encodings_location.open(mode="wb") as f:
         pickle.dump(name_encodings, f)
 
@@ -85,15 +91,14 @@ def recognize_faces(
 
     pillow_image = Image.fromarray(input_image)
     draw = ImageDraw.Draw(pillow_image)
-
+    image_width, image_height = pillow_image.size
     for bounding_box, unknown_encoding in zip(
         input_face_locations, input_face_encodings
     ):
-        name = _recognize_face(unknown_encoding, loaded_encodings)
+        name, common , total = _recognize_face(unknown_encoding, loaded_encodings)
         if not name:
             name = "Unknown"
-        _display_face(draw, bounding_box, name)
-
+        _display_face(draw, bounding_box, f"{name} {common}/{total}",(image_width, image_height))
     del draw
     pillow_image.show()
 
@@ -112,17 +117,28 @@ def _recognize_face(unknown_encoding, loaded_encodings):
         if match
     )
     if votes:
-        return votes.most_common(1)[0][0]
+        most_common_vote, most_common_count = votes.most_common(1)[0]
+        total_votes = loaded_encodings["counts"][most_common_vote]
+        return most_common_vote, most_common_count , total_votes
+    return None, 0,0
 
 
-def _display_face(draw, bounding_box, name):
+def _display_face(draw, bounding_box, name,image_size):
     """
     Draws bounding boxes around faces, a caption area, and text captions.
     """
+    image_width,image_height=image_size
+    font_size = max(10, int(image_width * 0.035))  
+    box_width = max(1, int(image_width * 0.01))
+    
+    font1 = ImageFont.truetype(FONT_PATH_2, font_size) 
+    
     top, right, bottom, left = bounding_box
-    draw.rectangle(((left, top), (right, bottom)), outline=BOUNDING_BOX_COLOR)
+    draw.rectangle(((left, top), (right, bottom)), outline=BOUNDING_BOX_COLOR, width= box_width)
     text_left, text_top, text_right, text_bottom = draw.textbbox(
-        (left, bottom), name
+        
+        (left, bottom), name,font=ImageFont.truetype(FONT_PATH_2, font_size*1.3) 
+
     )
     draw.rectangle(
         ((text_left, text_top), (text_right, text_bottom)),
@@ -133,6 +149,7 @@ def _display_face(draw, bounding_box, name):
         (text_left, text_top),
         name,
         fill=TEXT_COLOR,
+        font= font1
     )
 
 
