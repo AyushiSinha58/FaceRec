@@ -2,8 +2,6 @@ import argparse
 import pickle
 from collections import Counter
 from pathlib import Path
-#kys
-#kys again
 import face_recognition
 from PIL import Image, ImageDraw,  ImageFont
 
