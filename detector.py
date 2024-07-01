@@ -20,20 +20,19 @@ Path("validation").mkdir(exist_ok=True)
 parser = argparse.ArgumentParser(description="Recognize faces in an image")
 parser.add_argument("--train", action="store_true", help="Train on input data")
 parser.add_argument(
-    "--validate", action="store_true", help="Validate trained model"
+    "--validate", action="store_true", help="check if your model is working or not"
+)
+parser.add_argument("--test", action="store_true", help="you can use this for checking with any particular image stored on your device "
 )
 parser.add_argument(
-    "--test", action="store_true", help="Test the model with an unknown image"
-)
-parser.add_argument(
-    "-m",
+    "-modes",
     action="store",
     default="hog",
     choices=["hog", "cnn"],
-    help="Which model to use for training: hog (CPU), cnn (GPU)",
+    help="two modes are available , cnn for devices which have a GPU and cnn for devices without a cpu",
 )
 parser.add_argument(
-    "-f", action="store", help="Path to an image with an unknown face"
+    "-file", action="store", help="add a path to an image"
 )
 args = parser.parse_args()
 
@@ -155,8 +154,8 @@ def validate(model: str = "hog"):
 
 if __name__ == "__main__":
     if args.train:
-        encode_faces(model=args.m)
+        encode_faces(model=args.modes)
     if args.validate:
-        validate(model=args.m)
-    if args.test:
-        rec_faces(image_location=args.f, model=args.m)
+        validate(model=args.modes)
+    if args.test :
+        rec_faces(image_location=args.file, model=args.modes)
