@@ -1,5 +1,7 @@
 import argparse
 import pickle
+import cv2
+import time
 from collections import Counter
 from pathlib import Path
 
@@ -12,7 +14,7 @@ TEXT_COLOR = "white"
 FONT_PATH_1=rf"{Path.cwd()}\ARIAL.TTF"
 FONT_PATH_2=rf"{Path.cwd()}\COMiCSANS.TTF"
 
-
+Path("captured images").mkdir(exist_ok=True)
 Path("training").mkdir(exist_ok=True)
 Path("output").mkdir(exist_ok=True)
 Path("validation").mkdir(exist_ok=True)
@@ -33,6 +35,9 @@ parser.add_argument(
 )
 parser.add_argument(
     "-file", action="store", help="add a path to an image"
+)
+parser.add_argument(
+    "-capture", action="store", help="capture an image"
 )
 args = parser.parse_args()
 
@@ -90,7 +95,10 @@ def rec_faces(
         input_f_locations, input_f_encodings
     ):
         name, common , total = _rec_face(unknown_encoding, loaded_enc)
-        percentage=int(common/total*100)
+        if total == 0:
+            percentage = 0  
+        else:
+            percentage = int(common / total * 100)
 
         if not name:
             name = "Unknown"
@@ -150,6 +158,20 @@ def validate(model: str = "hog"):
             rec_faces(
                 image_location=str(filepath.absolute()), model=model
             )
+            
+def img_capture():
+
+    delay_seconds=3
+    camera = cv2.VideoCapture(0)
+    if not camera.isOpened():
+        print("Error: Could not open camera.")
+        return
+    time.sleep(delay_seconds)
+    ret, frame = camera.read()
+    camera.release()
+    image_path = rf"{Path.cwd()}\captured images\test.jpg" 
+    cv2.imwrite(image_path, frame)
+    rec_faces(image_path, model=args.modes)
 
 
 if __name__ == "__main__":
@@ -157,5 +179,7 @@ if __name__ == "__main__":
         encode_faces(model=args.modes)
     if args.validate:
         validate(model=args.modes)
-    if args.test :
+    if args.test and args.file :
         rec_faces(image_location=args.file, model=args.modes)
+    if args.test and args.capture :
+        img_capture()
