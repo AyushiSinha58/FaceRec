@@ -39,6 +39,9 @@ parser.add_argument(
 parser.add_argument(
     "-capture", action="store", help="capture an image"
 )
+parser.add_argument(
+    "-video", action="store", help="capture an image"
+)
 args = parser.parse_args()
 
 
@@ -173,7 +176,43 @@ def img_capture():
     cv2.imwrite(image_path, frame)
     rec_faces(image_path, model=args.modes)
 
+def vid_capture(encodings_location: Path = enc_path):
 
+    camera = cv2.VideoCapture(0)
+    if not camera.isOpened():
+        print("Error: Could not open camera.")
+        return
+    with encodings_location.open(mode="rb") as f:
+        loaded_enc = pickle.load(f)
+    while True:
+        ret, frame = camera.read()
+        if not ret:
+            break
+        input_f_locations = face_recognition.face_locations(
+            frame, model=args.modes
+        )
+        input_f_encodings = face_recognition.face_encodings(
+            frame, input_f_locations
+        )
+        for bounding_box, unknown_encoding in zip(
+            input_f_locations, input_f_encodings
+        ):
+            name, common, total = _rec_face(unknown_encoding, loaded_enc)
+            if total == 0:
+                percentage = 0  
+            else:
+                percentage = int(common / total * 100)
+
+            if not name:
+                name = "Unknown"
+            cv2.rectangle(frame, (bounding_box[3], bounding_box[0]), (bounding_box[1], bounding_box[2]), (0, 255, 0), 2)
+            cv2.putText(frame, f"{name} {percentage}%", (bounding_box[3], bounding_box[2] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1)
+        cv2.imshow("Face Recognition", frame)
+        if cv2.waitKey(1) & 0xFF == ord("q"):
+            break
+    camera.release()
+    cv2.destroyAllWindows()
+    
 if __name__ == "__main__":
     if args.train:
         encode_faces(model=args.modes)
@@ -183,3 +222,5 @@ if __name__ == "__main__":
         rec_faces(image_location=args.file, model=args.modes)
     if args.test and args.capture :
         img_capture()
+    if args.test and args.video:
+        vid_capture()
