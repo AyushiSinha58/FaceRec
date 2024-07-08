@@ -14,7 +14,7 @@ TEXT_COLOR = "white"
 FONT_PATH_1=rf"{Path.cwd()}\ARIAL.TTF"
 FONT_PATH_2=rf"{Path.cwd()}\COMiCSANS.TTF"
 
-Path("captured images").mkdir(exist_ok=True)
+
 Path("training").mkdir(exist_ok=True)
 Path("output").mkdir(exist_ok=True)
 Path("validation").mkdir(exist_ok=True)
@@ -34,13 +34,13 @@ parser.add_argument(
     help="two modes are available , cnn for devices which have a GPU and cnn for devices without a cpu",
 )
 parser.add_argument(
-    "-file", action="store", help="add a path to an image"
+    "-file", action="store_true", help="add a path to an image"
 )
 parser.add_argument(
-    "-capture", action="store", help="capture an image"
+    "-capture", action="store_true", help="capture an image"
 )
 parser.add_argument(
-    "-video", action="store", help="capture an image"
+    "-video", action="store_true", help="use device's video footage for facial recognition"
 )
 args = parser.parse_args()
 
@@ -163,7 +163,7 @@ def validate(model: str = "hog"):
             )
             
 def img_capture():
-
+    Path("captured images").mkdir(exist_ok=True)
     delay_seconds=3
     camera = cv2.VideoCapture(0)
     if not camera.isOpened():
