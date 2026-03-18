@@ -85,4 +85,5 @@ The system uses HOG (default) and CNN (optional) models for detection and encodi
 - Requires sufficient training data
 
 📜 License
+
 This project is for educational purposes.
