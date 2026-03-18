@@ -7,29 +7,30 @@ This project implements a complete face detection and recognition pipeline using
 It encodes facial features from images and matches them against stored data to identify individuals.
 
 It supports:
-📷 Image-based recognition
-📸 Live camera capture
-🎥 Real-time video recognition
-✅ Model validation
+- Image-based recognition
+- Live camera capture
+- Real-time video recognition
+- Model validation
+
 The system uses HOG (default) and CNN (optional) models for detection and encoding.
 
 🚀 Features
-🔍 Detect faces in images and videos
-🧑 Identify known individuals with accuracy percentage
-📦 Train model on custom datasets
-🎥 Real-time webcam recognition
-📊 Validation using test dataset
-⚡ Command-line interface with multiple modes
+- Detect faces in images and videos
+- Identify known individuals with accuracy percentage
+- Train model on custom datasets
+- Real-time webcam recognition
+- Validation using test dataset
+- Command-line interface with multiple modes
 
 🛠️ Tech Stack
-Python
-OpenCV (cv2)
-face_recognition
-dlib
-NumPy
-Pillow (PIL)
-argparse
-pickle
+- Python
+- OpenCV (cv2)
+- face_recognition
+- dlib
+- NumPy
+- Pillow (PIL)
+- argparse
+- pickle
 
 🧪 How It Works
 1. Training Phase
@@ -60,27 +61,27 @@ python detector.py --test -video
 -modes cnn   # GPU (faster, more accurate)
 
 📸 Sample Output
-Bounding box around detected face
-Name of person
-Accuracy percentage (e.g., Ayushi 88%)
-If no match is found → "Unknown"
+- Bounding box around detected face
+- Name of person
+- Accuracy percentage (e.g., Ayushi 88%)
+- If no match is found → "Unknown"
 
 📊 Results
-Successfully recognized multiple faces from dataset
-Works with:
-Stored images
-Live camera input
-Video streams
-Accuracy depends on:
-Quality of training images
-Lighting conditions
-Number of samples
+i. Successfully recognized multiple faces from dataset
+ii. Works with:
+-- Stored images
+-- Live camera input
+-- Video streams
+iii. Accuracy depends on:
+-- Quality of training images
+-- Lighting conditions
+-- Number of samples
 
 ⚠️ Limitations
-Performance drops in low lighting
-Video processing may lag on CPU
-Accuracy varies with face angles
-Requires sufficient training data
+- Performance drops in low lighting
+- Video processing may lag on CPU
+- Accuracy varies with face angles
+- Requires sufficient training data
 
 📜 License
 This project is for educational purposes.
