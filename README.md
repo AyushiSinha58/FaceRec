@@ -3,6 +3,7 @@
 A Python-based facial recognition system that detects and identifies faces from images, webcam captures, and live video streams using machine learning techniques.
 
 📌 Overview
+
 This project implements a complete face detection and recognition pipeline using the face_recognition library.
 It encodes facial features from images and matches them against stored data to identify individuals.
 
@@ -45,20 +46,20 @@ The system uses HOG (default) and CNN (optional) models for detection and encodi
 - Returns most probable identity with percentage score
 
 ▶️ Usage
-🔹 Train the Model
-python detector.py --train
-🔹 Validate Model
-python detector.py --validate
-🔹 Test on Image
-python detector.py --test -file "path_to_image"
-🔹 Capture Image from Webcam
-python detector.py --test -capture
-🔹 Live Video Recognition
-python detector.py --test -video
+1. Train the Model
+- python detector.py --train
+2. Validate Model
+- python detector.py --validate
+3. Test on Image
+- python detector.py --test -file "path_to_image"
+4. Capture Image from Webcam
+- python detector.py --test -capture
+5. Live Video Recognition
+- python detector.py --test -video
 (Press Q to exit video mode.)
-🔹 Change Detection Mode
--modes hog   # CPU (default)
--modes cnn   # GPU (faster, more accurate)
+6. Change Detection Mode
+- -modes hog   # CPU (default)
+- -modes cnn   # GPU (faster, more accurate)
 
 📸 Sample Output
 - Bounding box around detected face
@@ -67,15 +68,15 @@ python detector.py --test -video
 - If no match is found → "Unknown"
 
 📊 Results
-i. Successfully recognized multiple faces from dataset
-ii. Works with:
--- Stored images
--- Live camera input
--- Video streams
-iii. Accuracy depends on:
--- Quality of training images
--- Lighting conditions
--- Number of samples
+- i. Successfully recognized multiple faces from dataset
+- ii. Works with:
+- - Stored images
+- - Live camera input
+- - Video streams
+- iii. Accuracy depends on:
+- - Quality of training images
+- - Lighting conditions
+- - Number of samples
 
 ⚠️ Limitations
 - Performance drops in low lighting
